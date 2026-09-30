@@ -204,21 +204,85 @@ function App() {
 
   if (!token) {
     return (
-      <div className="container">
-        <header><h1>TradeFloor</h1><p>Please {isLoginMode ? 'Login' : 'Register'} to access the platform</p></header>
-        <section className="card" style={{ maxWidth: '400px', margin: '0 auto' }}>
-          <h2>{isLoginMode ? 'Login' : 'Register'}</h2>
-          <form onSubmit={handleAuthSubmit}>
-            {!isLoginMode && <input type="text" name="username" placeholder="Username" value={authForm.username} onChange={handleAuthChange} required />}
-            <input type="email" name="email" placeholder="Email" value={authForm.email} onChange={handleAuthChange} required />
-            <input type="password" name="password" placeholder="Password" value={authForm.password} onChange={handleAuthChange} required />
-            <button type="submit">{isLoginMode ? 'Login' : 'Register'}</button>
+      <div className="auth-page">
+        <div className="auth-brand">
+          <div className="auth-brand-content">
+            <div className="auth-logo">
+              <span className="logo-icon">&#9639;</span>
+              <span className="logo-text">TradeFloor</span>
+            </div>
+            <p className="auth-tagline">Real-time virtual stock trading simulator</p>
+            <div className="auth-stats">
+              <div className="auth-stat">
+                <span className="auth-stat-num">5</span>
+                <span className="auth-stat-label">Markets</span>
+              </div>
+              <div className="auth-stat">
+                <span className="auth-stat-num">24/7</span>
+                <span className="auth-stat-label">Trading</span>
+              </div>
+              <div className="auth-stat">
+                <span className="auth-stat-num">$10K</span>
+                <span className="auth-stat-label">Start Capital</span>
+              </div>
+            </div>
+          </div>
+          <div className="auth-ticker">
+            {prices.slice(0, 3).map(p => (
+              <div key={p.symbol} className={'auth-ticker-item ' + (p.change >= 0 ? 'up' : 'down')}>
+                <span className="auth-ticker-sym">{p.symbol}</span>
+                <span className="auth-ticker-prc">${p.price?.toFixed(2)}</span>
+                <span className="auth-ticker-chg">{p.changePercent?.toFixed(2)}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="auth-card">
+          <div className="auth-card-header">
+            <h2>{isLoginMode ? 'Welcome Back' : 'Create Account'}</h2>
+            <p>{isLoginMode ? 'Sign in to your TradeFloor account' : 'Start your virtual trading journey'}</p>
+          </div>
+
+          <form onSubmit={handleAuthSubmit} className="auth-form">
+            <div className={'auth-toggle' + (isLoginMode ? ' login' : ' register')}>
+              <span className={'auth-toggle-btn' + (isLoginMode ? ' active' : '')} onClick={() => setIsLoginMode(true)}>Login</span>
+              <span className={'auth-toggle-btn' + (!isLoginMode ? ' active' : '')} onClick={() => setIsLoginMode(false)}>Register</span>
+            </div>
+
+            {!isLoginMode && (
+              <div className="input-group">
+                <label>Username</label>
+                <div className="input-wrapper">
+                  <span className="input-icon">&#9997;</span>
+                  <input type="text" name="username" placeholder="Choose a username" value={authForm.username} onChange={handleAuthChange} required />
+                </div>
+              </div>
+            )}
+
+            <div className="input-group">
+              <label>Email</label>
+              <div className="input-wrapper">
+                <span className="input-icon">&#9993;</span>
+                <input type="email" name="email" placeholder="you@example.com" value={authForm.email} onChange={handleAuthChange} required />
+              </div>
+            </div>
+
+            <div className="input-group">
+              <label>Password</label>
+              <div className="input-wrapper">
+                <span className="input-icon">&#128274;</span>
+                <input type="password" name="password" placeholder={isLoginMode ? 'Enter your password' : 'Create a strong password'} value={authForm.password} onChange={handleAuthChange} required />
+              </div>
+            </div>
+
+            <button type="submit" className="auth-submit">
+              {isLoginMode ? 'Sign In' : 'Create Account'}
+            </button>
+
+            {authMessage && <p className={'auth-message ' + (authMessage.includes('successful') || authMessage.includes('successfully') ? 'success' : 'error')}>{authMessage}</p>}
           </form>
-          {authMessage && <p className="message-error">{authMessage}</p>}
-          <p className="toggle-link" onClick={() => setIsLoginMode(!isLoginMode)}>
-            {isLoginMode ? "Don't have an account? Register here." : 'Already have an account? Login here.'}
-          </p>
-        </section>
+        </div>
       </div>
     );
   }
@@ -233,7 +297,7 @@ function App() {
             <button className="btn-logout" onClick={handleLogout}>Logout</button>
           </div>
         </div>
-        {/* Price Ticker */}
+
         <div className="ticker">
           {prices.map(p => (
             <div key={p.symbol} className={'ticker-item' + (p.change >= 0 ? ' up' : ' down')} onClick={() => setSelectedAsset(p.symbol)}>
@@ -246,9 +310,9 @@ function App() {
       </header>
 
       <main className="dashboard">
-        {/* Left Column */}
+
         <div className="col-left">
-          {/* Portfolio */}
+
           <section className="card">
             <h2>Portfolio</h2>
             <div className="portfolio-summary">
@@ -275,7 +339,7 @@ function App() {
             </div>
           </section>
 
-          {/* Order Book */}
+
           <section className="card">
             <h2>Order Book - {selectedAsset}</h2>
             <div className="order-book">
@@ -306,9 +370,9 @@ function App() {
           </section>
         </div>
 
-        {/* Center Column */}
+
         <div className="col-center">
-          {/* Trade Form */}
+
           <section className="card">
             <h2>Place Order</h2>
             <form onSubmit={handleTradeSubmit}>
@@ -338,7 +402,7 @@ function App() {
             {tradeMessage && <p className={'message ' + (tradeMessage.includes('successful') ? 'message-success' : 'message-error')}>{tradeMessage}</p>}
           </section>
 
-          {/* Active Orders */}
+
           <section className="card">
             <h2>Active Orders</h2>
             <div className="table-container">
@@ -362,9 +426,9 @@ function App() {
           </section>
         </div>
 
-        {/* Right Column */}
+
         <div className="col-right">
-          {/* Market Trades */}
+
           <section className="card">
             <h2>Market Trades</h2>
             <div className="trade-feed">
@@ -380,7 +444,7 @@ function App() {
             </div>
           </section>
 
-          {/* My Trade History */}
+
           <section className="card">
             <h2>My History</h2>
             <div className="trade-feed">

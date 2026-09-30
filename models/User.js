@@ -17,12 +17,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  // إضافة الرصيد الافتراضي 10,000 دولار حسب متطلبات الجامعة
   balance: {
     type: Number,
     default: 10000 
   },
-  // المحفظة الافتراضية (تحفظ كمية الأسهم التي يملكها من كل شركة)
   portfolio: {
     type: Map,
     of: Number,
